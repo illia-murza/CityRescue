@@ -79,10 +79,10 @@ public class CityRescueImpl implements CityRescue {
         // TODO: implement
         Station station = stations.get(stationId);
         if (station == null) {
-            throw new IDNotRecognisedException("No ID Recognised")
+            throw new IDNotRecognisedException("No ID Recognised");
         }
         if (maxUnits < 0) {
-            throw new InvalidCapacityException("Max Units Cannot Be Zero")
+            throw new InvalidCapacityException("Max Units Cannot Be Zero");
         }
     public int addUnit(int stationId, UnitType type) throws IDNotRecognisedException, InvalidUnitException, IllegalStateException {
         // TODO: implement
@@ -91,7 +91,9 @@ public class CityRescueImpl implements CityRescue {
     if (station == null) {
         throw new IDNotRecognisedException("Station ID not found");
     }
-        
+    if (type == null) {
+		throw new InvalidUnitException("Unit must have a type");
+	}
 
 
         
