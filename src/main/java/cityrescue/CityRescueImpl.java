@@ -108,12 +108,35 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public void decommissionUnit(int unitId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
+		Unit unit = units.get(unitId);
+    if (unit == null) {
+        throw new IDNotRecognisedException("Unit ID not found");
+    }
+		units.remove(UnitId);
+	}
+
+
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void transferUnit(int unitId, int newStationId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
+		Unit unit = units.get(unitId);
+		if (unit == null) {
+        	throw new IDNotRecognisedException("Unit ID not found");
+	}
+
+    	Station newStation = stations.get(newStationId);
+    	if (newStation == null) {
+        	throw new IDNotRecognisedException("Station ID not found");
+	}
+
+		unit.setStationId(newStationId);
+	}
+
+
+
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
