@@ -143,12 +143,27 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public void setUnitOutOfService(int unitId, boolean outOfService) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
+		Unit unit = units.get(unitId);
+		if (unit == null) {
+        	throw new IDNotRecognisedException("Unit ID not found");
+	}
+		unit.setOutOfService(outOfService);
+
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public int[] getUnitIds() {
         // TODO: implement
+		int[] ids = new int[units.size()];
+		int i = 0;
+		for (int id : units.keySet()) {
+			ids[i++] = id;
+		}
+		return ids;
+	}
+
+
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
