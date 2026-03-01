@@ -170,8 +170,28 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public String viewUnit(int unitId) throws IDNotRecognisedException {
         // TODO: implement
+		Unit unit = units.get(unitId);
+		if (unit == null) {
+        	throw new IDNotRecognisedException("Unit ID not found");
+	}
         throw new UnsupportedOperationException("Not implemented yet");
     }
+		@Override
+public String viewUnit(int unitId) throws IDNotRecognisedException {
+    Unit unit = units.get(unitId);
+    if (unit == null) {
+        throw new IDNotRecognisedException("Unit ID not found: " + unitId);
+    }
+
+    StringBuilder unitInfo = new StringBuilder();
+    unitInfo.append("Unit ID: ").append(unit.getId()).append("\n");
+    unitInfo.append("Station: ").append(unit.getStationId()).append("\n");
+    unitInfo.append("Out of service: ").append(unit.isOutOfService()).append("\n");
+    unitInfo.append("Decommissioned: ").append(unit.isDecommissioned()).append("\n");
+
+    return unitInfo.toString();
+}
+
 
     @Override
     public int reportIncident(IncidentType type, int severity, int x, int y) throws InvalidSeverityException, InvalidLocationException {
