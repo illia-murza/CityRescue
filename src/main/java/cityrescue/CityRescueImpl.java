@@ -33,29 +33,25 @@ public class CityRescueImpl implements CityRescue {
         this.width = width;
         this.height = height;
         this.obstacles = new boolean[width][height];
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	}
 
     @Override
     public int[] getGridSize() {
         // TODO: implement
         return new int[] {width, height};
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
+	}
+	
     @Override
     public void addObstacle(int x, int y) throws InvalidLocationException {
         // TODO: implement
         obstacles[x][y] = true;
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	}
 
     @Override
     public void removeObstacle(int x, int y) throws InvalidLocationException {
         // TODO: implement
         obstacles[x][y] = false;
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	}
 
     @Override
     public int addStation(String name, int x, int y) throws InvalidNameException, InvalidLocationException {
@@ -64,15 +60,19 @@ public class CityRescueImpl implements CityRescue {
         int id = nextStationId;
         nextStationId++;
         stations.put(id, station);
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	}
+        
 
     @Override
     public void removeStation(int stationId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
-        stations.remove(StationId)
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		Station station = stations.get(stationId);
+    if (station == null) {
+        throw new IDNotRecognisedException("Station ID not found");
+	}
+		stations.remove(stationId)
+			}
+        
 
     @Override
     public void setStationCapacity(int stationId, int maxUnits) throws IDNotRecognisedException, InvalidCapacityException {
@@ -102,8 +102,7 @@ public class CityRescueImpl implements CityRescue {
         int id = nextUnitId;
         nextUnitId++;
         units.put(id, unit);
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		
 
     @Override
     public void decommissionUnit(int unitId) throws IDNotRecognisedException, IllegalStateException {
@@ -116,8 +115,6 @@ public class CityRescueImpl implements CityRescue {
 	}
 
 
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 
     @Override
     public void transferUnit(int unitId, int newStationId) throws IDNotRecognisedException, IllegalStateException {
@@ -137,9 +134,6 @@ public class CityRescueImpl implements CityRescue {
 
 
 
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     @Override
     public void setUnitOutOfService(int unitId, boolean outOfService) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
@@ -149,8 +143,6 @@ public class CityRescueImpl implements CityRescue {
 	}
 		unit.setOutOfService(outOfService);
 
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 
     @Override
     public int[] getUnitIds() {
@@ -163,10 +155,6 @@ public class CityRescueImpl implements CityRescue {
 		return ids;
 	}
 
-
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     @Override
     public String viewUnit(int unitId) throws IDNotRecognisedException {
         // TODO: implement
@@ -174,22 +162,11 @@ public class CityRescueImpl implements CityRescue {
 		if (unit == null) {
         	throw new IDNotRecognisedException("Unit ID not found");
 	}
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-		@Override
-public String viewUnit(int unitId) throws IDNotRecognisedException {
-    Unit unit = units.get(unitId);
-    if (unit == null) {
-        throw new IDNotRecognisedException("Unit ID not found: " + unitId);
-    }
 
-    StringBuilder unitInfo = new StringBuilder();
-    unitInfo.append("Unit ID: ").append(unit.getId()).append("\n");
-    unitInfo.append("Station: ").append(unit.getStationId()).append("\n");
-    unitInfo.append("Out of service: ").append(unit.isOutOfService()).append("\n");
-    unitInfo.append("Decommissioned: ").append(unit.isDecommissioned()).append("\n");
-
-    return unitInfo.toString();
+    	StringBuilder unitInfo = new StringBuilder();
+    	unitInfo.append("Unit ID: ").append(unit.getId()).append("\n");
+    	unitInfo.append("Station: ").append(unit.getStationId()).append("\n");
+    	return unitInfo.toString();
 }
 
 
