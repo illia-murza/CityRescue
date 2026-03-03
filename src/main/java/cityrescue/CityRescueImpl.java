@@ -84,6 +84,7 @@ public class CityRescueImpl implements CityRescue {
         if (maxUnits < 0) {
             throw new InvalidCapacityException("Max Units Cannot Be Zero");
         }
+		
     public int addUnit(int stationId, UnitType type) throws IDNotRecognisedException, InvalidUnitException, IllegalStateException {
         // TODO: implement
         
@@ -94,10 +95,7 @@ public class CityRescueImpl implements CityRescue {
     if (type == null) {
 		throw new InvalidUnitException("Unit must have a type");
 	}
-
-
-        
-        Unit unit = new Unit(nextUnitId, type, stationId); //create new unit
+	Unit unit = new Unit(nextUnitId, type, stationId); //create new unit
 
         int id = nextUnitId;
         nextUnitId++;
@@ -142,6 +140,7 @@ public class CityRescueImpl implements CityRescue {
         	throw new IDNotRecognisedException("Unit ID not found");
 	}
 		unit.setOutOfService(outOfService);
+	}
 
 
     @Override
@@ -173,20 +172,60 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public int reportIncident(IncidentType type, int severity, int x, int y) throws InvalidSeverityException, InvalidLocationException {
         // TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		if (severity < 1 || severity > 5) {
+			throw new InvalidSeverityException("Severity must be between 1 and 5");
+		}
+	
+		if (x < 0 || x > width || y < 0 || y > height) {
+			throw new InvalidLocationException("Invalid Location");
+		}
+	
+		
+		int id = nextIncidentId;
+		nextIncidentId++;
+
+		Incident incident = new Incident(id, type, severity, x, y);
+		incidents.put(id, incident);
+
+		return id;
+	}
+
+	
+
 
     @Override
     public void cancelIncident(int incidentId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		incident incident = incidents.get(incidentId);
+		if (incident == null) {
+			throw new IDNotRecognisedException("ID not found");
+				}
+		incidents.remove(incidentID);
+	}
+        
 
     @Override
     public void escalateIncident(int incidentId, int newSeverity) throws IDNotRecognisedException, InvalidSeverityException, IllegalStateException {
         // TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+        incident incident = incidents.get(incidentId);
+		if (incident == null) {
+			throw new IDNotRecognisedException("ID not found");
+				}
+		if (newSeverity < 1 || newSeverity > 5) {
+			throw new InvalidSeverityException("Severity must be between 1 and 5");
+		}
+		
+		if (newSeverity <= incident.severity) {
+        	throw new IllegalStateException("New severity must be higher than current severity");
+		}
+		
+		incident.severity = newSeverity;
+		incidents.put(incidentId, incident);
+	}
+
+
+		
+		
 
     @Override
     public int[] getIncidentIds() {
