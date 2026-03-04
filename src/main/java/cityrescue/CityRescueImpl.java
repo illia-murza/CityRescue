@@ -410,4 +410,137 @@ public class CityRescueImpl implements CityRescue {
 
         return sb.toString();
     }
+
+
+
+	private Station findStation(int id) throws IDNotRecognisedException {
+        for (int i = 0; i < stationCount; i++)
+            if (stations[i].getId() == id) return stations[i];
+        throw new IDNotRecognisedException("Station ID " + id + " not recognised.");
+    }
+
+    private Unit findUnit(int id) throws IDNotRecognisedException {
+        for (int i = 0; i < unitCount; i++)
+            if (units[i].getId() == id) return units[i];
+        throw new IDNotRecognisedException("Unit ID " + id + " not recognised.");
+    }
+
+    private Incident findIncident(int id) throws IDNotRecognisedException {
+        for (int i = 0; i < incidentCount; i++)
+            if (incidents[i].getId() == id) return incidents[i];
+        throw new IDNotRecognisedException("Incident ID " + id + " not recognised.");
+    }
+
+	private Unit findUnitById(int id) {
+        for (int i = 0; i < unitCount; i++)
+            if (units[i].getId() == id) return units[i];
+        return null;
+    }
+
+    private Incident findIncidentById(int id) {
+        for (int i = 0; i < incidentCount; i++)
+            if (incidents[i].getId() == id) return incidents[i];
+        return null;
+    }
+
+	private void removeStationFromArray(int stationId) {
+        for (int i = 0; i < stationCount; i++) {
+            if (stations[i].getId() == stationId) {
+                System.arraycopy(stations, i + 1, stations, i, stationCount - i - 1);
+                stations[--stationCount] = null;
+                return;
+            }
+        }
+    }
+
+    private void removeUnitFromArray(int unitId) {
+        for (int i = 0; i < unitCount; i++) {
+            if (units[i].getId() == unitId) {
+                System.arraycopy(units, i + 1, units, i, unitCount - i - 1);
+                units[--unitCount] = null;
+                return;
+            }
+        }
+    }
+
+	private int countUnitsAtStation(int stationId) {
+        int count = 0;
+        for (int i = 0; i < unitCount; i++)
+            if (units[i].getHomeStationId() == stationId) count++;
+        return count;
+    }
+
+	private Unit createUnit(int id, UnitType type, int homeStationId, int x, int y) {
+        switch (type) {
+            case AMBULANCE:   return new Ambulance(id, homeStationId, x, y);
+            case FIRE_ENGINE: return new FireEngine(id, homeStationId, x, y);
+            case POLICE_CAR:  return new PoliceCar(id, homeStationId, x, y);
+            default: throw new IllegalArgumentException("Unknown unit type: " + type);
+        }
+    }
+
+	private Unit findBestUnit(Incident inc) {
+        Unit best = null;
+        int bestDist = Integer.MAX_VALUE;
+
+        // Iterate in ascending unitId order (getUnitIds already sorted)
+        for (int uid : getUnitIds()) {
+            Unit u = findUnitById(uid);
+            if (u == null) continue;
+            if (!u.canHandle(inc.getType())) continue;
+            if (u.getStatus() != UnitStatus.IDLE) continue;
+
+            int dist = CityMap.manhattan(u.getX(), u.getY(), inc.getX(), inc.getY());
+            boolean better = false;
+            if (best == null) {
+                better = true;
+            } else if (dist < bestDist) {
+                better = true;
+            } else if (dist == bestDist) {
+                // Tie-break 2: lower unitId (ascending order means earlier in loop wins)
+                if (u.getId() < best.getId()) {
+                    better = true;
+                } else if (u.getId() == best.getId()) {
+                    // Tie-break 3: lower homeStationId
+                    if (u.getHomeStationId() < best.getHomeStationId()) {
+                        better = true;
+                    }
+                }
+            }
+            if (better) {
+                best = u;
+                bestDist = dist;
+            }
+        }
+        return best;
+    }
+
+	private void moveUnit(Unit u, int targetX, int targetY) {
+        int cx = u.getX(), cy = u.getY();
+        int curDist = CityMap.manhattan(cx, cy, targetX, targetY);
+        int fbx = Integer.MIN_VALUE, fby = 0; // fallback position
+
+        for (int d = 0; d < 4; d++) {
+            int nx = cx + DX[d];
+            int ny = cy + DY[d];
+            if (!map.isPassable(nx, ny)) continue;
+            int newDist = CityMap.manhattan(nx, ny, targetX, targetY);
+            if (newDist < curDist) {
+                u.setX(nx);
+                u.setY(ny);
+                return;
+            }
+            if (fbx == Integer.MIN_VALUE) { fbx = nx; fby = ny; }
+        }
+        if (fbx != Integer.MIN_VALUE) { u.setX(fbx); u.setY(fby); }
+        // else: stay put
+    }
+
+	private void sortAscending(int[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            int key = arr[i], j = i - 1;
+            while (j >= 0 && arr[j] > key) { arr[j + 1] = arr[j]; j--; }
+            arr[j + 1] = key;
+        }
+    }
 }
