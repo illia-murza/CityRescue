@@ -41,11 +41,6 @@ public class CityRescueImpl implements CityRescue {
     private static final int[] DX = {  0, 1, 0, -1 };
     private static final int[] DY = { -1, 0, 1,  0 };
 
-	// 1. Grid
-
-	// resets all state: clears stations, units, incidents, obstacles, sets tick to 0
-	// throws InvalidGridException if width or height is not positive
-
     @Override
     public void initialise(int width, int height) throws InvalidGridException {
         // TODO: implement
@@ -104,8 +99,7 @@ public class CityRescueImpl implements CityRescue {
         stations[stationCount++] = new Station(id, name, x, y, DEFAULT_STATION_CAPACITY);
         return id;
 	}
-        
-
+    
     @Override
     public void removeStation(int stationId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
@@ -117,8 +111,7 @@ public class CityRescueImpl implements CityRescue {
         }
         removeStationFromArray(stationId);
 	}
-        
-
+    
     @Override
     public void setStationCapacity(int stationId, int maxUnits) throws IDNotRecognisedException, InvalidCapacityException {
         // TODO: implement
@@ -135,7 +128,6 @@ public class CityRescueImpl implements CityRescue {
         s.setMaxUnits(maxUnits);
     }
 
-
 	@Override
     public int[] getStationIds() {
         int[] ids = new int[stationCount];
@@ -144,7 +136,6 @@ public class CityRescueImpl implements CityRescue {
         return ids;
     }
 
-		
     public int addUnit(int stationId, UnitType type) throws IDNotRecognisedException, InvalidUnitException, IllegalStateException {
         // TODO: implement
         Station s = findStation(stationId);
@@ -164,7 +155,6 @@ public class CityRescueImpl implements CityRescue {
         return id;
     }
 
-
     @Override
     public void decommissionUnit(int unitId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
@@ -177,11 +167,10 @@ public class CityRescueImpl implements CityRescue {
         removeUnitFromArray(unitId);
     }
 
-
     @Override
     public void transferUnit(int unitId, int newStationId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
-		Unit u    = findUnit(unitId);
+		Unit u = findUnit(unitId);
         Station d = findStation(newStationId);
         if (u.getStatus() != UnitStatus.IDLE) {
             throw new IllegalStateException(
@@ -196,7 +185,6 @@ public class CityRescueImpl implements CityRescue {
         u.setX(d.getX());
         u.setY(d.getY());
     }
-
 
     @Override
     public void setUnitOutOfService(int unitId, boolean outOfService) throws IDNotRecognisedException, IllegalStateException {
@@ -218,7 +206,6 @@ public class CityRescueImpl implements CityRescue {
         }
     }
 
-
     @Override
     public int[] getUnitIds() {
         // TODO: implement
@@ -233,7 +220,6 @@ public class CityRescueImpl implements CityRescue {
         // TODO: implement
 		return findUnit(unitId).format();
 	}
-
 
     @Override
     public int reportIncident(IncidentType type, int severity, int x, int y) throws InvalidSeverityException, InvalidLocationException {
@@ -256,7 +242,6 @@ public class CityRescueImpl implements CityRescue {
         return id;
     }	
 
-
     @Override
     public void cancelIncident(int incidentId) throws IDNotRecognisedException, IllegalStateException {
         // TODO: implement
@@ -277,8 +262,7 @@ public class CityRescueImpl implements CityRescue {
         inc.setStatus(IncidentStatus.CANCELLED);
         inc.setAssignedUnitId(-1);
     }
-        
-
+    
     @Override
     public void escalateIncident(int incidentId, int newSeverity) throws IDNotRecognisedException, InvalidSeverityException, IllegalStateException {
         // TODO: implement
@@ -293,8 +277,7 @@ public class CityRescueImpl implements CityRescue {
         }
         inc.setSeverity(newSeverity);
     }	
-		
-
+	
     @Override
     public int[] getIncidentIds() {
         // TODO: implement
@@ -304,14 +287,12 @@ public class CityRescueImpl implements CityRescue {
         return ids;
     }
 
-
     @Override
     public String viewIncident(int incidentId) throws IDNotRecognisedException {
         // TODO: implement
 		return findIncident(incidentId).format();
 	}
-        
-
+    
     @Override
     public void dispatch() {
         // TODO: implement
@@ -330,7 +311,6 @@ public class CityRescueImpl implements CityRescue {
         }
     }
 
-
     @Override
     public void tick() {
         // TODO: implement
@@ -338,7 +318,7 @@ public class CityRescueImpl implements CityRescue {
 
         int[] sortedUnitIds = getUnitIds();
 
-        // Step 1 — move EN_ROUTE units
+        // move EN_ROUTE units
         for (int uid : sortedUnitIds) {
             Unit u = findUnitById(uid);
             if (u == null || u.getStatus() != UnitStatus.EN_ROUTE) continue;
@@ -347,7 +327,7 @@ public class CityRescueImpl implements CityRescue {
             moveUnit(u, inc.getX(), inc.getY());
         }
 
-        // Step 2 — mark arrivals
+        // mark arrivals
         for (int uid : sortedUnitIds) {
             Unit u = findUnitById(uid);
             if (u == null || u.getStatus() != UnitStatus.EN_ROUTE) continue;
@@ -360,7 +340,7 @@ public class CityRescueImpl implements CityRescue {
             }
         }
 
-        // Step 3 — process on-scene work
+        // process on-scene work
         for (int uid : sortedUnitIds) {
             Unit u = findUnitById(uid);
             if (u == null || u.getStatus() != UnitStatus.AT_SCENE) continue;
@@ -369,7 +349,7 @@ public class CityRescueImpl implements CityRescue {
             }
         }
 
-        // Step 4 — resolve completed incidents (ascending incidentId)
+        // resolve completed incidents (ascending incidentId)
         int[] sortedIncIds = getIncidentIds();
         for (int incId : sortedIncIds) {
             Incident inc = findIncidentById(incId);
@@ -409,7 +389,7 @@ public class CityRescueImpl implements CityRescue {
         return sb.toString();
     }
 
-
+	// private methods
 
 	private Station findStation(int id) throws IDNotRecognisedException {
         for (int i = 0; i < stationCount; i++)
@@ -481,7 +461,7 @@ public class CityRescueImpl implements CityRescue {
         Unit best = null;
         int bestDist = Integer.MAX_VALUE;
 
-        // Iterate in ascending unitId order (getUnitIds already sorted)
+        // iterate in ascending unitId order (getUnitIds already sorted)
         for (int uid : getUnitIds()) {
             Unit u = findUnitById(uid);
             if (u == null) continue;
@@ -495,11 +475,11 @@ public class CityRescueImpl implements CityRescue {
             } else if (dist < bestDist) {
                 better = true;
             } else if (dist == bestDist) {
-                // Tie-break 2: lower unitId (ascending order means earlier in loop wins)
+                // lower unitId (ascending order means earlier in loop wins)
                 if (u.getId() < best.getId()) {
                     better = true;
                 } else if (u.getId() == best.getId()) {
-                    // Tie-break 3: lower homeStationId
+                    // lower homeStationId
                     if (u.getHomeStationId() < best.getHomeStationId()) {
                         better = true;
                     }
@@ -531,7 +511,6 @@ public class CityRescueImpl implements CityRescue {
             if (fbx == Integer.MIN_VALUE) { fbx = nx; fby = ny; }
         }
         if (fbx != Integer.MIN_VALUE) { u.setX(fbx); u.setY(fby); }
-        // else: stay put
     }
 
 	private void sortAscending(int[] arr) {
