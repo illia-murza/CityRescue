@@ -26,6 +26,9 @@ public class CityRescueImpl implements CityRescue {
 
  // Tick
     private int tickCounter = 0; //starting counter
+	
+// incident assignments    incidentID , unitID
+	private Map<Integer, Integer> assignments = new HashMap<>();
 
     @Override
     public void initialise(int width, int height) throws InvalidGridException {
@@ -256,8 +259,20 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public void dispatch() {
         // TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		for (Incident incident : incidents.values()) {
+			if (assignments.containsKey(incident.id)) {  //checks if the incident has already been assigned 
+            	continue;
+			}
+			for (Unit unit : units.values()) {
+					if (!assignments.containsValue(unit.id)) { //checks if unit is available
+						assignments.put(incident.id, unit.id); //assigns unit to the incident
+						break;
+					}
+			}
+		}
+	}
+
+
 
     @Override
     public void tick() {
