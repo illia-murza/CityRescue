@@ -95,7 +95,7 @@ public class CityRescueImpl implements CityRescue {
     if (type == null) {
 		throw new InvalidUnitException("Unit must have a type");
 	}
-	Unit unit = new Unit(nextUnitId, type, stationId); //create new unit
+		Unit unit = new Unit(nextUnitId, type, stationId); //create new unit
 
         int id = nextUnitId;
         nextUnitId++;
@@ -230,14 +230,28 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public int[] getIncidentIds() {
         // TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    	int[] ids = new int[incidents.size()];
+    	int i = 0;
+		for (int id : incidents.keySet()) {
+        	ids[i++] = id;
+		}
+		return ids;
+	}
 
     @Override
     public String viewIncident(int incidentId) throws IDNotRecognisedException {
         // TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		incident incident = incidents.get(incidentId);
+		if (incident == null) {
+			throw IDNotRecognisedException("Incident ID Not Found");
+		}
+		
+		StringBuilder incidentInfo = new StringBuilder();
+    	unitInfo.append("Incident ID: ").append(incident.id).append("\n");
+    	unitInfo.append("Incident Type: ").append(incident.type).append("\n");
+    	return incidentInfo.toString();
+	}
+        
 
     @Override
     public void dispatch() {
