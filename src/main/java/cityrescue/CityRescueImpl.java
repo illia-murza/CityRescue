@@ -15,8 +15,8 @@ public class CityRescueImpl implements CityRescue {
     // TODO: add fields (map, arrays for stations/units/incidents, counters, tick, etc.)
     
 	// storage limits
-	private static final int MAX_STATIONS  = 20;
-    private static final int MAX_UNITS     = 50;
+	private static final int MAX_STATIONS = 20;
+    private static final int MAX_UNITS = 50;
     private static final int MAX_INCIDENTS = 200;
 	// default station capacity assigned when a station is first created
 	private static final int DEFAULT_STATION_CAPACITY = 5;
@@ -38,8 +38,8 @@ public class CityRescueImpl implements CityRescue {
 
 	// direction vectors: N, E, S, W
 	// N = y decreases, E = x increases, S = y increases, W = x decreases
-    private static final int[] DX = {  0, 1, 0, -1 };
-    private static final int[] DY = { -1, 0, 1,  0 };
+    private static final int[] DX = {0, 1, 0, -1};
+    private static final int[] DY = {-1, 0, 1, 0};
 
     @Override
     public void initialise(int width, int height) throws InvalidGridException {
@@ -83,7 +83,7 @@ public class CityRescueImpl implements CityRescue {
     public int addStation(String name, int x, int y) throws InvalidNameException, InvalidLocationException {
         // TODO: implement
 		if (name == null || name.trim().isEmpty()) {
-            throw new InvalidNameException("Station name must not be blank.");
+            throw new InvalidNameException("The station name must not be empty.");
         }
         if (!map.inBounds(x, y)) {
             throw new InvalidLocationException("Location (" + x + "," + y + ") is out of bounds.");
@@ -107,7 +107,7 @@ public class CityRescueImpl implements CityRescue {
         int cnt = countUnitsAtStation(stationId);
         if (cnt > 0) {
             throw new IllegalStateException(
-                "Station " + stationId + " still has " + cnt + " unit(s); cannot remove.");
+                "Station " + stationId + " still has " + cnt + " unit(s) (cannot remove).");
         }
         removeStationFromArray(stationId);
 	}
