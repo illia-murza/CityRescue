@@ -282,21 +282,17 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public void escalateIncident(int incidentId, int newSeverity) throws IDNotRecognisedException, InvalidSeverityException, IllegalStateException {
         // TODO: implement
-        incident incident = incidents.get(incidentId);
-		if (incident == null) {
-			throw new IDNotRecognisedException("ID not found");
-				}
-		if (newSeverity < 1 || newSeverity > 5) {
-			throw new InvalidSeverityException("Severity must be between 1 and 5");
-		}
-		
-		if (newSeverity <= incident.severity) {
-        	throw new IllegalStateException("New severity must be higher than current severity");
-		}
-		
-		incident.severity = newSeverity;
-		incidents.put(incidentId, incident);
-	}		
+        Incident inc = findIncident(incidentId);
+        if (newSeverity < 1 || newSeverity > 5) {
+            throw new InvalidSeverityException("Severity must be 1-5; got " + newSeverity + ".");
+        }
+        IncidentStatus st = inc.getStatus();
+        if (st == IncidentStatus.RESOLVED || st == IncidentStatus.CANCELLED) {
+            throw new IllegalStateException(
+                "Incident " + incidentId + " is " + st + " and cannot be escalated.");
+        }
+        inc.setSeverity(newSeverity);
+    }	
 		
 
     @Override
@@ -319,18 +315,20 @@ public class CityRescueImpl implements CityRescue {
     @Override
     public void dispatch() {
         // TODO: implement
-		for (Incident incident : incidents.values()) {
-			if (assignments.containsKey(incident.id)) {  //checks if the incident has already been assigned 
-            	continue;
-			}
-			for (Unit unit : units.values()) {
-					if (!assignments.containsValue(unit.id)) { //checks if unit is available
-						assignments.put(incident.id, unit.id); //assigns unit to the incident
-						break;
-					}
-			}
-		}
-	}
+		int[] sortedIncIds = getIncidentIds();
+        for (int incId : sortedIncIds) {
+            Incident inc = findIncidentById(incId);
+            if (inc == null || inc.getStatus() != IncidentStatus.REPORTED) continue;
+
+            Unit best = findBestUnit(inc);
+            if (best == null) continue;
+
+            inc.setAssignedUnitId(best.getId());
+            inc.setStatus(IncidentStatus.DISPATCHED);
+            best.setAssignedIncidentId(incId);
+            best.setStatus(UnitStatus.EN_ROUTE);
+        }
+    }
 
 
     @Override
