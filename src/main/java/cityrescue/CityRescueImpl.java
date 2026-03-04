@@ -2,6 +2,7 @@ package cityrescue;
 
 import cityrescue.enums.*;
 import cityrescue.exceptions.*;
+import cityrescue.model.*;
 
 /**
  * CityRescueImpl (Starter)
