@@ -122,8 +122,7 @@ public class CityRescueImpl implements CityRescue {
         int current = countUnitsAtStation(stationId);
         if (maxUnits < current) {
             throw new InvalidCapacityException(
-                "Cannot reduce capacity to " + maxUnits
-                + "; station already has " + current + " unit(s).");
+                "Cannot reduce capacity to " + maxUnits + ". Station already has " + current + " unit(s).");
         }
         s.setMaxUnits(maxUnits);
     }
@@ -140,7 +139,7 @@ public class CityRescueImpl implements CityRescue {
         // TODO: implement
         Station s = findStation(stationId);
         if (type == null) {
-            throw new InvalidUnitException("Unit type must not be null.");
+            throw new InvalidUnitException("The unit type must not be empty.");
         }
         int current = countUnitsAtStation(stationId);
         if (current >= s.getMaxUnits()) {
@@ -174,7 +173,7 @@ public class CityRescueImpl implements CityRescue {
         Station d = findStation(newStationId);
         if (u.getStatus() != UnitStatus.IDLE) {
             throw new IllegalStateException(
-                "Unit " + unitId + " must be IDLE to transfer; currently " + u.getStatus() + ".");
+                "Unit " + unitId + " must be IDLE to transfer. Currently " + u.getStatus() + ".");
         }
         int current = countUnitsAtStation(newStationId);
         if (current >= d.getMaxUnits()) {
@@ -193,14 +192,13 @@ public class CityRescueImpl implements CityRescue {
         if (outOfService) {
             if (u.getStatus() != UnitStatus.IDLE) {
                 throw new IllegalStateException(
-                    "Unit " + unitId + " must be IDLE to set OUT_OF_SERVICE; currently "
-                    + u.getStatus() + ".");
+                    "Unit " + unitId + " must be IDLE to set OUT_OF_SERVICE. Currently " + u.getStatus() + ".");
             }
             u.setStatus(UnitStatus.OUT_OF_SERVICE);
         } else {
             if (u.getStatus() != UnitStatus.OUT_OF_SERVICE) {
                 throw new IllegalStateException(
-                    "Unit " + unitId + " is not OUT_OF_SERVICE; currently " + u.getStatus() + ".");
+                    "Unit " + unitId + " is not OUT_OF_SERVICE. Currently " + u.getStatus() + ".");
             }
             u.setStatus(UnitStatus.IDLE);
         }
@@ -225,7 +223,7 @@ public class CityRescueImpl implements CityRescue {
     public int reportIncident(IncidentType type, int severity, int x, int y) throws InvalidSeverityException, InvalidLocationException {
         // TODO: implement
 		if (severity < 1 || severity > 5) {
-            throw new InvalidSeverityException("Severity must be 1-5; got " + severity + ".");
+            throw new InvalidSeverityException("Severity must be between 1 and 5. Got " + severity + ".");
         }
         if (!map.inBounds(x, y)) {
             throw new InvalidLocationException("Location (" + x + "," + y + ") is out of bounds.");
@@ -249,7 +247,7 @@ public class CityRescueImpl implements CityRescue {
         IncidentStatus st = inc.getStatus();
         if (st != IncidentStatus.REPORTED && st != IncidentStatus.DISPATCHED) {
             throw new IllegalStateException(
-                "Incident " + incidentId + " cannot be cancelled; status is " + st + ".");
+                "Incident " + incidentId + " cannot be cancelled. Status is " + st + ".");
         }
         if (st == IncidentStatus.DISPATCHED) {
             Unit u = findUnitById(inc.getAssignedUnitId());
@@ -268,7 +266,7 @@ public class CityRescueImpl implements CityRescue {
         // TODO: implement
         Incident inc = findIncident(incidentId);
         if (newSeverity < 1 || newSeverity > 5) {
-            throw new InvalidSeverityException("Severity must be 1-5; got " + newSeverity + ".");
+            throw new InvalidSeverityException("Severity must be between 1 and 5. Got " + newSeverity + ".");
         }
         IncidentStatus st = inc.getStatus();
         if (st == IncidentStatus.RESOLVED || st == IncidentStatus.CANCELLED) {
@@ -450,9 +448,9 @@ public class CityRescueImpl implements CityRescue {
 
 	private Unit createUnit(int id, UnitType type, int homeStationId, int x, int y) {
         switch (type) {
-            case AMBULANCE:   return new Ambulance(id, homeStationId, x, y);
+            case AMBULANCE: return new Ambulance(id, homeStationId, x, y);
             case FIRE_ENGINE: return new FireEngine(id, homeStationId, x, y);
-            case POLICE_CAR:  return new PoliceCar(id, homeStationId, x, y);
+            case POLICE_CAR: return new PoliceCar(id, homeStationId, x, y);
             default: throw new IllegalArgumentException("Unknown unit type: " + type);
         }
     }
